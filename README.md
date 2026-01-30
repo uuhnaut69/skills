@@ -1,5 +1,3 @@
-![Agent Skills Hero](assets/hero.png)
-
 # Agent Skills
 
 A collection of modular skills that extend Claude Code's capabilities with specialized knowledge, workflows, and tools.
@@ -61,4 +59,4 @@ skill-name/
 
 ## License
 
-MIT
+[MIT](LICENSE)
