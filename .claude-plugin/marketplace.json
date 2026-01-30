@@ -1,0 +1,27 @@
+{
+  "name": "agent-skills",
+  "owner": {
+    "name": "uuhnaut69",
+    "url": "https://github.com/uuhnaut69"
+  },
+  "metadata": {
+    "description": "Agent Skills",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "skill-creator",
+      "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+      "version": "1.0.0",
+      "path": "plugins/skill-creator",
+      "keywords": ["skill", "creator", "plugin", "extension", "workflow"]
+    },
+    {
+      "name": "spring-boot",
+      "description": "Spring Boot development patterns, best practices, and Spring Boot 4 features. Covers REST APIs, dependency injection, testing strategies, error handling with ProblemDetail, and modern Java patterns like records for DTOs.",
+      "version": "1.0.0",
+      "path": "plugins/spring-boot",
+      "keywords": ["java", "spring", "spring-boot", "rest", "api", "backend"]
+    }
+  ]
+}
