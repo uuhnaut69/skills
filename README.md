@@ -12,40 +12,43 @@ Skills are "onboarding guides" for specific domains that transform Claude from a
 
 ## Available Skills
 
-| Skill                              | Description                                                                                                                                                                                            |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [spring-boot](skills/spring-boot/) | Spring Boot development patterns, best practices, and Spring Boot 4 features. Covers REST APIs, dependency injection, testing strategies, error handling with ProblemDetail, and modern Java patterns. |
+| Skill                                      | Description                                                                                                                                                                           |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [java-spring](skills/java-spring/)         | Best practices for Java/Spring projects. Covers DDD principles, explicit code (no Lombok), Spring Boot 4 features, REST APIs, testing with Testcontainers, and observability.         |
+| [spring-modulith](skills/spring-modulith/) | Expert guidance on building modular monoliths with Spring Modulith 2.0.2+ (targeting Spring Boot 3.4+). Covers module structure, verification, testing, and documentation generation. |
 
 ## Installation
 
 ### Claude Code (Plugin Marketplace)
 
 ```bash
-/plugin marketplace add uuhnaut69/agent-skills
-/plugin enable skills
-/plugin install spring-boot@skills
+/plugin marketplace add uuhnaut69/skills
+/plugin install java-spring@skills
 ```
 
 ### Claude Code (Manual Installation)
 
 ```bash
 # Clone or download this repository
-git clone https://github.com/uuhnaut69/agent-skills.git
+git clone git@github.com:uuhnaut69/skills.git
 
 # Copy skills to Claude Code skills directory
-cp -r agent-skills/skills/* ~/.claude/skills/
+cp -r skills/skills/* ~/.claude/skills/
 ```
 
 ## Usage
 
 Once installed, Claude Code will automatically detect and use the appropriate skill based on your queries:
 
-- **Spring Boot queries**: Ask about Spring Boot patterns, REST API design, testing strategies, or Spring Boot 4 features
+- **Java/Spring queries**: Ask about Spring Boot patterns, DDD structure, REST API design, testing strategies, or Spring Boot 4 features
   - "How should I structure my Spring Boot REST controller?"
   - "What's the best way to handle exceptions with ProblemDetail?"
   - "Show me how to use RestTestClient in Spring Boot 4"
 
-Skills use progressive disclosure - only loading detailed reference material when needed to keep context efficient.
+- **Spring Modulith queries**: Ask about modular monolith architecture, module boundaries, or event-driven design
+  - "How do I define modules in Spring Modulith?"
+  - "How can I test individual application modules?"
+  - "Show me how to generate module documentation"
 
 ## Skill Structure
 
