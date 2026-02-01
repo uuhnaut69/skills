@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "A collection of skills for Agentic AI",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   "plugins": [
     {
       "name": "spring-boot",
       "description": "Spring Boot development patterns, best practices, and Spring Boot 4 features. Covers REST APIs, dependency injection, testing strategies, error handling with ProblemDetail, and modern Java patterns like records for DTOs.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./",
       "strict": false,
       "skills": ["./skills/spring-boot"]
