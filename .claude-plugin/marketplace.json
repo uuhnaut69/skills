@@ -10,12 +10,12 @@
   },
   "plugins": [
     {
-      "name": "spring-boot",
+      "name": "java-spring",
       "description": "Spring Boot development patterns, best practices, and Spring Boot 4 features. Covers REST APIs, dependency injection, testing strategies, error handling with ProblemDetail, and modern Java patterns like records for DTOs.",
       "version": "1.0.1",
       "source": "./",
       "strict": false,
-      "skills": ["./skills/spring-boot"]
+      "skills": ["./skills/java-spring"]
     },
     {
       "name": "spring-modulith",
