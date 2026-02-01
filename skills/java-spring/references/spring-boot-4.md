@@ -338,7 +338,6 @@ public class PaymentService {
 | `jitter` | Random jitter factor (0.0 to 1.0) | 0.0 |
 | `retryFor` | Exceptions that trigger retry | All |
 | `noRetryFor` | Exceptions that skip retry | None |
-```
 
 ### Concurrency Limiting
 ```java

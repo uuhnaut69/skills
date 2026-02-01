@@ -81,9 +81,12 @@ public class OrderService {
 ```java
 @RestController
 @RequestMapping("/api/v1/orders")
-@RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping
     public List<OrderResponse> listOrders(
@@ -234,115 +237,8 @@ public class ResourceNotFoundException extends RuntimeException {
         this.resourceId = resourceId;
     }
 
-    // getters
-}
-```
-
-## Test Slices
-
-Choose the narrowest test scope that validates your code.
-
-### @WebMvcTest - Controller Tests
-```java
-@WebMvcTest(OrderController.class)
-class OrderControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private OrderService orderService;
-
-    @Test
-    void createOrder_ValidRequest_ReturnsCreated() throws Exception {
-        var request = new CreateOrderRequest("cust-1", List.of(item));
-        var response = new OrderResponse("ord-1", "cust-1", PENDING, List.of(), BigDecimal.TEN, now(), now());
-
-        when(orderService.create(any())).thenReturn(response);
-
-        mockMvc.perform(post("/api/v1/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").value("ord-1"))
-            .andExpect(jsonPath("$.status").value("PENDING"));
-    }
-
-    @Test
-    void createOrder_InvalidRequest_ReturnsBadRequest() throws Exception {
-        var invalidRequest = new CreateOrderRequest("", List.of());
-
-        mockMvc.perform(post("/api/v1/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.title").value("Validation Error"));
-    }
-}
-```
-
-### @DataJpaTest - Repository Tests
-```java
-@DataJpaTest
-class OrderRepositoryTest {
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @Test
-    void findByCustomerId_ReturnsMatchingOrders() {
-        var order1 = new Order("cust-1", List.of());
-        var order2 = new Order("cust-1", List.of());
-        var order3 = new Order("cust-2", List.of());
-
-        entityManager.persist(order1);
-        entityManager.persist(order2);
-        entityManager.persist(order3);
-        entityManager.flush();
-
-        var results = orderRepository.findByCustomerId("cust-1");
-
-        assertThat(results).hasSize(2);
-        assertThat(results).allMatch(o -> o.getCustomerId().equals("cust-1"));
-    }
-}
-```
-
-### @SpringBootTest - Integration Tests
-```java
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Testcontainers
-class OrderIntegrationTest {
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
-
-    @Test
-    void fullOrderLifecycle() {
-        // Create order
-        var createRequest = new CreateOrderRequest("cust-1", List.of(item));
-        var createResponse = restTemplate.postForEntity(
-            "/api/v1/orders", createRequest, OrderResponse.class);
-
-        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        var orderId = createResponse.getBody().id();
-
-        // Get order
-        var getResponse = restTemplate.getForEntity(
-            "/api/v1/orders/" + orderId, OrderResponse.class);
-
-        assertThat(getResponse.getBody().status()).isEqualTo(PENDING);
-    }
+    public String getResourceType() { return resourceType; }
+    public String getResourceId() { return resourceId; }
 }
 ```
 
@@ -397,88 +293,6 @@ app:
     retry:
       max-attempts: 3
       initial-delay: 1s
-```
-
-## Package-by-Feature Structure
-
-Organize code by business feature, not by layer.
-
-### Recommended Structure
-```
-src/main/java/com/example/shop/
-├── order/
-│   ├── OrderController.java
-│   ├── OrderService.java
-│   ├── OrderRepository.java
-│   ├── Order.java (entity)
-│   ├── OrderStatus.java
-│   ├── CreateOrderRequest.java
-│   ├── OrderResponse.java
-│   └── OrderNotFoundException.java
-├── customer/
-│   ├── CustomerController.java
-│   ├── CustomerService.java
-│   └── ...
-├── payment/
-│   ├── PaymentService.java
-│   ├── PaymentClient.java
-│   └── ...
-└── shared/
-    ├── exception/
-    │   └── GlobalExceptionHandler.java
-    └── config/
-        └── JacksonConfig.java
-```
-
-### Benefits
-- Related code is together
-- Easy to understand feature boundaries
-- Simpler to extract to microservices later
-- Reduces coupling between features
-
-## HTTP Interface Clients
-
-Use declarative HTTP clients for external services.
-
-### Define Interface
-```java
-public interface PaymentClient {
-
-    @PostExchange("/payments")
-    PaymentResponse createPayment(@RequestBody PaymentRequest request);
-
-    @GetExchange("/payments/{id}")
-    PaymentResponse getPayment(@PathVariable String id);
-
-    @GetExchange("/payments")
-    List<PaymentResponse> listPayments(
-        @RequestParam String orderId,
-        @RequestParam(required = false) PaymentStatus status);
-}
-```
-
-### Configure Client
-```java
-@Configuration
-public class PaymentClientConfig {
-
-    @Bean
-    public PaymentClient paymentClient(
-            RestClient.Builder builder,
-            PaymentProperties properties) {
-
-        RestClient restClient = builder
-            .baseUrl(properties.baseUrl())
-            .defaultHeader("X-API-Key", properties.apiKey())
-            .requestInterceptor(new LoggingInterceptor())
-            .build();
-
-        return HttpServiceProxyFactory
-            .builderFor(RestClientAdapter.create(restClient))
-            .build()
-            .createClient(PaymentClient.class);
-    }
-}
 ```
 
 ## RestClient (Imperative HTTP)
